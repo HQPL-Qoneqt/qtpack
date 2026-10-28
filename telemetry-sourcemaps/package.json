@@ -1,0 +1,46 @@
+{
+  "name": "@hqpl/telemetry-sourcemaps",
+  "version": "0.4.3",
+  "description": "Stamps debug IDs into builds and uploads their sourcemaps so error stack traces resolve to original source. CLI + Vite plugin + Metro config wrapper + Gradle/Xcode hooks for React Native release builds.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "telemetry-sourcemaps": "./bin/telemetry-sourcemaps.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./vite": {
+      "types": "./src/vite.d.ts",
+      "default": "./src/vite.js"
+    },
+    "./vite-dev": {
+      "types": "./src/vite-dev.d.ts",
+      "default": "./src/vite-dev.js"
+    },
+    "./metro": "./src/metro.cjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "gradle",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "vite": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  }
+}

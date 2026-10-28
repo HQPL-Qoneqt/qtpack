@@ -1,0 +1,61 @@
+{
+  "name": "@hqpl/telemetry",
+  "version": "0.2.3",
+  "description": "Hqpl browser and React Native telemetry SDK: events, sessions, page views and error tracking (stack traces are resolved server-side via @hqpl/telemetry-sourcemaps sourcemaps).",
+  "type": "module",
+  "license": "MIT",
+  "main": "./src/telemetry.js",
+  "react-native": "./src/telemetry.native.js",
+  "types": "./src/telemetry.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/telemetry.d.ts",
+      "react-native": "./src/telemetry.native.js",
+      "default": "./src/telemetry.js"
+    },
+    "./expo-router": {
+      "types": "./src/expo-router.d.ts",
+      "default": "./src/expo-router.js"
+    },
+    "./core": "./src/telemetry-core.js",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "./src/telemetry.js",
+    "./src/telemetry.native.js"
+  ],
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": ">=1.17",
+    "@react-native-community/netinfo": ">=9",
+    "expo-router": ">=3",
+    "react": ">=18",
+    "react-native": ">=0.72"
+  },
+  "peerDependenciesMeta": {
+    "@react-native-async-storage/async-storage": {
+      "optional": true
+    },
+    "@react-native-community/netinfo": {
+      "optional": true
+    },
+    "expo-router": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  }
+}
