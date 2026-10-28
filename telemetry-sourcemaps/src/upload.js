@@ -84,7 +84,7 @@ export async function findMapFiles(dir) {
 }
 
 // Uploads every .map under dir (or just `files`) to the telemetry backend, which
-// writes them to the bucket. Local files are deleted only after every batch has succeeded.
+// stores them. Local files are deleted only after every batch has succeeded.
 export async function uploadSourcemaps({
   dir,
   files: only,

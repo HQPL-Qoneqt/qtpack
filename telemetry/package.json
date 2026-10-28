@@ -1,7 +1,7 @@
 {
   "name": "@hqpl/telemetry",
   "version": "0.2.3",
-  "description": "Hqpl browser and React Native telemetry SDK: events, sessions, page views and error tracking (stack traces are resolved server-side via @hqpl/telemetry-sourcemaps sourcemaps).",
+  "description": "Hqpl browser and React Native telemetry SDK: events, sessions, page views and error tracking (stack traces are resolved server-side via @hqpl/qtpack sourcemaps).",
   "type": "module",
   "license": "MIT",
   "main": "./src/telemetry.js",

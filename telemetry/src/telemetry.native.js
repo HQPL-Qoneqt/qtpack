@@ -117,7 +117,7 @@ let _errorHandlerInstalled = false;
 let _fatalInProgress = false;
 
 // ErrorUtils is the RN equivalent of window.onerror. The previous handler (RN's
-// red box or crash, Sentry while it is installed) still gets every error.
+// red box or crash) still gets every error.
 function _installErrorHandler() {
   if (_errorHandlerInstalled || typeof ErrorUtils === 'undefined') return;
   _errorHandlerInstalled = true;
@@ -158,7 +158,7 @@ function _installErrorHandler() {
 // React Native only tracks unhandled rejections in development (to warn), so
 // release builds report none unless something turns tracking on. Hermes keeps
 // one tracker: this replaces RN's development one (its warning is kept below)
-// and any set before init(), such as Sentry's.
+// and any set before init().
 function _installRejectionTracking() {
   const hermes = globalThis.HermesInternal;
   if (!hermes?.enablePromiseRejectionTracker || hermes.hasPromise?.() === false) return;

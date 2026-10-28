@@ -48,7 +48,7 @@ await telemetry.init({
   platform: Platform.OS,                     // 'android' | 'ios'
   appVersion: Application.nativeApplicationVersion,
   projectName: 'hqpl',
-  // Must match the release telemetry-sourcemaps uploads with: <project>-<version>+<build>
+  // Must match the release qtpack uploads with: <project>-<version>+<build>
   release: `hqpl-${Application.nativeApplicationVersion}+${Application.nativeBuildVersion}`,
   environment: __DEV__ ? 'development' : 'production',
   enabled: !__DEV__,
@@ -71,12 +71,12 @@ import { TelemetryScreenTracker } from '@hqpl/telemetry/expo-router';
 `init()` on React Native also reports:
 
 - **Uncaught JS errors** through `ErrorUtils`. The previous handler (React Native's
-  red box or crash, or Sentry's) still runs.
+  red box or crash) still runs.
 - **Fatal crashes.** The report is saved before the app closes, and the app is held
   open for up to 2 seconds while it is sent. If it isn't sent in time, it goes out
   on the next launch.
 - **Unhandled promise rejections** through Hermes. Hermes keeps only one rejection
-  tracker, so this replaces any set earlier, such as Sentry's. Pass
+  tracker, so this replaces any set earlier. Pass
   `trackUnhandledRejections: false` to keep the other one.
 
 Failed API calls are not tracked automatically on React Native (apps usually use
@@ -116,7 +116,7 @@ telemetry.init({
 ```
 
 React helpers (`ErrorBoundary`, impression hooks) are not part of this package.
-Pair it with [`@hqpl/telemetry-sourcemaps`](../telemetry-sourcemaps) to upload sourcemaps so stack traces resolve
+Pair it with [`@hqpl/qtpack`](../qtpack) to upload sourcemaps so stack traces resolve
 to original source.
 
 ## License

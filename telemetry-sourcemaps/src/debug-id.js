@@ -98,7 +98,7 @@ export async function copyDebugId(fromMapPath, toMapPath) {
 }
 
 // Both spellings name the same bundle: "debugId" (what the backend reads first)
-// and "debug_id" (older tools such as sentry-cli also read it). If a map has the
+// and "debug_id" (older tools also read it). If a map has the
 // second, it is set to the same ID, so no tool ever sees a stale one.
 function withMapDebugId(map, id) {
   return 'debug_id' in map ? { ...map, debugId: id, debug_id: id } : { ...map, debugId: id };
@@ -107,9 +107,8 @@ function withMapDebugId(map, id) {
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 // An ID the bundler or another tool already gave this bundle. Expo's serializer
-// computes one for release exports and puts it in the map ("debugId"), in a
-// "//# debugId=" comment, and (via Sentry's plugin) in Sentry's runtime snippet
-// as "sentry-dbid-<id>". An all-zero stand-in doesn't count.
+// computes one for release exports and puts it in the map ("debugId") and in a
+// "//# debugId=" comment. An all-zero stand-in doesn't count.
 function existingDebugId(code, map) {
   let parsed = map;
   try {
@@ -121,7 +120,6 @@ function existingDebugId(code, map) {
     code.match(/^\/\/# debugId=(\S+)\s*$/m)?.[1],
     parsed?.debugId,
     parsed?.debug_id,
-    code.match(/sentry-dbid-([0-9a-fA-F-]{36})/)?.[1],
   ];
   for (const raw of candidates) {
     const id = typeof raw === 'string' ? raw.toLowerCase() : null;
@@ -134,10 +132,9 @@ function existingDebugId(code, map) {
 // every map Metro builds (including the dev server's .map endpoint, which skips
 // custom serializers). This swaps the placeholder for the bundle's real ID.
 //
-// If the bundle already has an ID (from Expo, which Sentry also uses), telemetry-sourcemaps uses
-// that same one, so every tool's map matches the same bundle. Otherwise telemetry-sourcemaps makes
-// its own from the bundle's content. Either way nothing depends on Sentry: removing
-// it changes nothing here.
+// If the bundle already has an ID (from Expo), qtpack uses that same
+// one, so every tool's map matches the same bundle. Otherwise qtpack makes
+// its own from the bundle's content.
 export function finalizeMetroBundle(code, map) {
   if (!code.includes(PLACEHOLDER)) return { code, map, id: null };
   const id = existingDebugId(code, map) ?? debugIdFromContent(code);

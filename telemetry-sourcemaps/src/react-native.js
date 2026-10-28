@@ -5,7 +5,7 @@ import { copyDebugId } from './debug-id.js';
 import { describeError, uploadSourcemaps } from './upload.js';
 
 // Uploads the final map of a React Native release build, from inside that build:
-// gradle/telemetry-sourcemaps.gradle runs it for Android (APK and AAB), bin/compose-source-maps.cjs
+// gradle/qtpack.gradle runs it for Android (APK and AAB), bin/compose-source-maps.cjs
 // for iOS (IPA). Like the Vite plugin it never fails the build unless
 // SOURCEMAP_FAIL_ON_ERROR is set: a missing token or an unreachable backend logs a
 // warning and the app still builds. Returns true when the map was uploaded.
@@ -26,15 +26,15 @@ export async function uploadReactNativeMap({
     // Without Hermes there is no compose step and no packager map.
     if (packagerMap && existsSync(packagerMap)) await copyDebugId(packagerMap, map);
     const { debugId } = JSON.parse(readFileSync(map, 'utf8'));
-    if (debugId) log(`[telemetry-sourcemaps] debug ID ${debugId}`);
-    else warn('[telemetry-sourcemaps] map has no debug ID (is metro.config.js using withDebugIds?); it will only resolve by release');
+    if (debugId) log(`[qtpack] debug ID ${debugId}`);
+    else warn('[qtpack] map has no debug ID (is metro.config.js using withDebugIds?); it will only resolve by release');
     const upload = resolveUploadConfig(env);
     if (!upload.configured) throw new Error(`missing ${upload.missing.join(', ')}`);
     await uploadSourcemaps({ files: [map], platform, release, url: upload.url, token: upload.token, fetchImpl, log });
     return true;
   } catch (err) {
     if (failOnError) throw err;
-    warn(`[telemetry-sourcemaps] sourcemap not uploaded, build continues: ${describeError(err)}`);
+    warn(`[qtpack] sourcemap not uploaded, build continues: ${describeError(err)}`);
     return false;
   }
 }

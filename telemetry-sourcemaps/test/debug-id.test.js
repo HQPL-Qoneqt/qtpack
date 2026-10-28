@@ -116,18 +116,6 @@ test('finalizeMetroBundle swaps the placeholder without moving anything', () => 
   assert.ok(code.includes(`//# debugId=${id}`));
 });
 
-test('finalizeMetroBundle uses the ID Sentry stamped, so both tools match one bundle', () => {
-  const sentryId = '1b4e28ba-2fa1-4d3b-a3f5-ef19b5a7633b';
-  const bundle = `;!function(){var x="${PLACEHOLDER}"}();\n_sentryDebugIds[s]="${sentryId}";\n__r(0);\n//# debugId=${sentryId}\n//# sourceMappingURL=x.map\n`;
-  const map = JSON.stringify({ ...sampleMap(), debugId: sentryId, debug_id: sentryId });
-  const out = finalizeMetroBundle(bundle, map);
-  assert.equal(out.id, sentryId);
-  assert.ok(out.code.includes(`var x="${sentryId}"`));
-  assert.equal(out.code.match(/\/\/# debugId=/g).length, 1);
-  assert.equal(JSON.parse(out.map).debugId, sentryId);
-  assert.equal(JSON.parse(out.map).debug_id, sentryId);
-});
-
 test('finalizeMetroBundle finds an existing ID in the map when the bundle has no comment', () => {
   const expoId = '5f0c2a1e-8d3b-4c7a-9e21-3b6f4d8a2c10';
   const bundle = `;!function(){var x="${PLACEHOLDER}"}();\n__r(0);\n`;
@@ -136,15 +124,7 @@ test('finalizeMetroBundle finds an existing ID in the map when the bundle has no
   assert.ok(out.code.includes(`//# debugId=${expoId}`));
 });
 
-test('finalizeMetroBundle finds the ID in Sentry\'s runtime snippet', () => {
-  const sentryId = '5f0c2a1e-8d3b-4c7a-9e21-3b6f4d8a2c10';
-  const bundle = `_sentryDebugIdIdentifier="sentry-dbid-${sentryId}";\n;!function(){var x="${PLACEHOLDER}"}();\n__r(0);\n`;
-  const out = finalizeMetroBundle(bundle, JSON.stringify(sampleMap()));
-  assert.equal(out.id, sentryId);
-  assert.equal(JSON.parse(out.map).debugId, sentryId);
-});
-
-test('finalizeMetroBundle makes its own ID when no other tool stamped one (Sentry removed)', () => {
+test('finalizeMetroBundle makes its own ID when no other tool stamped one', () => {
   const bundle = `;!function(){var x="${PLACEHOLDER}"}();\n__r(0);\n`;
   const out = finalizeMetroBundle(bundle, JSON.stringify(sampleMap()));
   assert.equal(out.id, debugIdFromContent(bundle));

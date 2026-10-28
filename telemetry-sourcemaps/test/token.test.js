@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { assertProjectName, hashToken, newToken } from '../src/token.js';
 
-const BIN = fileURLToPath(new URL('../bin/telemetry-sourcemaps.js', import.meta.url));
+const BIN = fileURLToPath(new URL('../bin/qtpack.js', import.meta.url));
 
 function run(args, input) {
   return new Promise((resolve) => {

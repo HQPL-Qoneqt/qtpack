@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Stand-in for React Native's scripts/compose-source-maps.js in the iOS release
 // build (Xcode Release / Archive, so every IPA). It runs the original, then
-// `telemetry-sourcemaps react-native`, which copies "debugId" from Metro's map into the result
+// `qtpack react-native`, which copies "debugId" from Metro's map into the result
 // and uploads it. This is the only point where that works: the original drops the
 // ID, and react-native-xcode.sh deletes Metro's map right after.
 //
@@ -23,13 +23,13 @@ const outFlag = args.findIndex((a) => a === '-o' || a === '--output');
 const output = outFlag >= 0 ? args[outFlag + 1] : null;
 if (!output) process.exit(0);
 
-// telemetry-sourcemaps exits 0 after a warning. Anything else (SOURCEMAP_FAIL_ON_ERROR, or a
-// crash in telemetry-sourcemaps) fails the archive only when SOURCEMAP_FAIL_ON_ERROR is set.
+// qtpack exits 0 after a warning. Anything else (SOURCEMAP_FAIL_ON_ERROR, or a
+// crash in qtpack) fails the archive only when SOURCEMAP_FAIL_ON_ERROR is set.
 const uploaded = spawnSync(
   process.execPath,
-  [path.join(__dirname, 'telemetry-sourcemaps.js'), 'react-native', '--platform', 'ios', '--map', output, '--packager-map', args[0]],
+  [path.join(__dirname, 'qtpack.js'), 'react-native', '--platform', 'ios', '--map', output, '--packager-map', args[0]],
   { stdio: 'inherit' },
 );
 if (uploaded.status === 0) process.exit(0);
 if (['1', 'true'].includes(process.env.SOURCEMAP_FAIL_ON_ERROR)) process.exit(uploaded.status ?? 1);
-console.warn('[telemetry-sourcemaps] sourcemap step failed, build continues');
+console.warn('[qtpack] sourcemap step failed, build continues');

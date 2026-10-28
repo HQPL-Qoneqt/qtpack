@@ -39,7 +39,7 @@ export default function sourcemapUploadPlugin(options = {}) {
   let buildFailed = false;
 
   return {
-    name: 'telemetry-sourcemaps',
+    name: 'qtpack',
     apply: 'build',
 
     config(userConfig) {
@@ -75,7 +75,7 @@ export default function sourcemapUploadPlugin(options = {}) {
           throw new Error('release is required: pass the release option or set RELEASE');
         }
 
-        const log = (line) => console.log(`[telemetry-sourcemaps] ${line}`);
+        const log = (line) => console.log(`[qtpack] ${line}`);
         await injectDebugIds(outDir, { log });
         await uploadSourcemaps({
           dir: outDir,
@@ -88,7 +88,7 @@ export default function sourcemapUploadPlugin(options = {}) {
         });
       } catch (err) {
         if (failOnError) throw err;
-        console.warn(`[telemetry-sourcemaps] sourcemaps not uploaded, build continues: ${describeError(err)}`);
+        console.warn(`[qtpack] sourcemaps not uploaded, build continues: ${describeError(err)}`);
         await removeMaps(outDir, deleteAfterUpload);
       }
     },
@@ -102,8 +102,8 @@ async function removeMaps(dir, deleteAfterUpload) {
   try {
     const maps = await findMapFiles(dir);
     await Promise.all(maps.map((file) => rm(file, { force: true })));
-    if (maps.length) console.warn(`[telemetry-sourcemaps] removed ${maps.length} map file(s) from ${dir} so they are not deployed`);
+    if (maps.length) console.warn(`[qtpack] removed ${maps.length} map file(s) from ${dir} so they are not deployed`);
   } catch (err) {
-    console.warn(`[telemetry-sourcemaps] could not clean up map files: ${err.message}`);
+    console.warn(`[qtpack] could not clean up map files: ${err.message}`);
   }
 }

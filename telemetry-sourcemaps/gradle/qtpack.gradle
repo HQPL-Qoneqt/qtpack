@@ -1,9 +1,9 @@
-// telemetry-sourcemaps: uploads the JS sourcemap of every Android release build (assembleRelease
+// qtpack: uploads the JS sourcemap of every Android release build (assembleRelease
 // for an APK, bundleRelease for an AAB) right after React Native bundles it.
 //
 // In android/app/build.gradle, after `apply plugin: "com.facebook.react"`:
 //
-//   apply from: new File(["node", "--print", "require.resolve('@hqpl/telemetry-sourcemaps/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/gradle/telemetry-sourcemaps.gradle"
+//   apply from: new File(["node", "--print", "require.resolve('@hqpl/qtpack/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/gradle/qtpack.gradle"
 //
 // SOURCEMAP_UPLOAD_URL and SOURCEMAP_UPLOAD_TOKEN come from the environment, or
 // from ~/.gradle/gradle.properties (never the project's gradle.properties: it is
@@ -13,19 +13,19 @@
 // property), default rootProject.name.
 
 if (extensions.findByName("react") == null || extensions.findByName("androidComponents") == null) {
-    throw new GradleException("telemetry-sourcemaps.gradle must be applied after the com.android.application and com.facebook.react plugins")
+    throw new GradleException("qtpack.gradle must be applied after the com.android.application and com.facebook.react plugins")
 }
 
 // Captured here: inside the onVariants callback a bare `react` can resolve to null.
 def reactExt = extensions.getByName("react")
 
-def telemetrySourcemapsCli = new File(buildscript.sourceFile.parentFile.parentFile, "bin/telemetry-sourcemaps.js").absolutePath
-def telemetrySourcemapsProject = (System.getenv("TELEMETRY_SOURCEMAPS_PROJECT") ?: findProperty("TELEMETRY_SOURCEMAPS_PROJECT") ?: rootProject.name)
+def qtpackCli = new File(buildscript.sourceFile.parentFile.parentFile, "bin/qtpack.js").absolutePath
+def qtpackProject = (System.getenv("TELEMETRY_SOURCEMAPS_PROJECT") ?: findProperty("TELEMETRY_SOURCEMAPS_PROJECT") ?: rootProject.name)
         .toString().toLowerCase().replaceAll(/[^a-z0-9._-]+/, "-")
-def telemetrySourcemapsEnv = ["SOURCEMAP_UPLOAD_URL", "SOURCEMAP_UPLOAD_TOKEN", "SOURCEMAP_FAIL_ON_ERROR"].collectEntries { key ->
+def qtpackEnv = ["SOURCEMAP_UPLOAD_URL", "SOURCEMAP_UPLOAD_TOKEN", "SOURCEMAP_FAIL_ON_ERROR"].collectEntries { key ->
     [(key): (System.getenv(key) ?: findProperty(key))?.toString()]
 }.findAll { it.value }
-def telemetrySourcemapsFailOnError = telemetrySourcemapsEnv.SOURCEMAP_FAIL_ON_ERROR in ["1", "true"]
+def qtpackFailOnError = qtpackEnv.SOURCEMAP_FAIL_ON_ERROR in ["1", "true"]
 
 androidComponents.onVariants(androidComponents.selector().all()) { variant ->
     // Debuggable variants load JS from Metro and have no bundle, so nothing to upload.
@@ -38,21 +38,21 @@ androidComponents.onVariants(androidComponents.selector().all()) { variant ->
     def packagerMap = new File(buildDir, "intermediates/sourcemaps/react/${variant.name}/${bundleName}.packager.map")
     def output = variant.outputs.first()
 
-    def upload = tasks.register("telemetrySourcemapsUpload${name}SourceMap", Exec) {
-        group = "telemetry-sourcemaps"
+    def upload = tasks.register("qtpackUpload${name}SourceMap", Exec) {
+        group = "qtpack"
         description = "Uploads the ${variant.name} JS sourcemap."
         // A dependency, not finalizedBy: a finalizer also runs when the bundle step
         // fails, and would upload the previous build's map under this version.
         dependsOn("createBundle${name}JsAndAssets")
-        commandLine(reactExt.nodeExecutableAndArgs.get() + [telemetrySourcemapsCli, "react-native", "--platform", "android",
+        commandLine(reactExt.nodeExecutableAndArgs.get() + [qtpackCli, "react-native", "--platform", "android",
                 "--map", map.absolutePath, "--packager-map", packagerMap.absolutePath])
         argumentProviders.add({
-            ["--release", "${telemetrySourcemapsProject}-${output.versionName.getOrElse("0")}+${output.versionCode.getOrElse(0)}".toString()]
+            ["--release", "${qtpackProject}-${output.versionName.getOrElse("0")}+${output.versionCode.getOrElse(0)}".toString()]
         } as CommandLineArgumentProvider)
-        telemetrySourcemapsEnv.each { key, value -> environment(key, value) }
-        // telemetry-sourcemaps itself exits 0 after a warning; this also covers a crash in telemetry-sourcemaps,
+        qtpackEnv.each { key, value -> environment(key, value) }
+        // qtpack itself exits 0 after a warning; this also covers a crash in qtpack,
         // which must not stop a store build either.
-        ignoreExitValue = !telemetrySourcemapsFailOnError
+        ignoreExitValue = !qtpackFailOnError
     }
 
     // Part of producing the APK (assemble) and AAB (bundle), so it can't be skipped.

@@ -2,7 +2,7 @@
 //
 //   // metro.config.js
 //   const { getDefaultConfig } = require('expo/metro-config');
-//   const { withDebugIds } = require('@hqpl/telemetry-sourcemaps/metro');
+//   const { withDebugIds } = require('@hqpl/qtpack/metro');
 //   module.exports = withDebugIds(getDefaultConfig(__dirname));
 //
 // CommonJS because metro.config.js is loaded with require(); debug-id.js is ESM,
@@ -26,7 +26,7 @@ function defaultSerializer() {
         unwrap(bundleToString)(unwrap(baseJSBundle)(entryPoint, preModules, graph, options)).code;
     } catch {}
   }
-  throw new Error('[telemetry-sourcemaps] could not load Metro\'s default serializer');
+  throw new Error('[qtpack] could not load Metro\'s default serializer');
 }
 
 // Mutates config in place: Expo's serializer keeps a reference to the original

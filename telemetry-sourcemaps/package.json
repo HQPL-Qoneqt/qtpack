@@ -1,11 +1,11 @@
 {
-  "name": "@hqpl/telemetry-sourcemaps",
-  "version": "0.4.3",
+  "name": "@hqpl/qtpack",
+  "version": "0.4.6",
   "description": "Stamps debug IDs into builds and uploads their sourcemaps so error stack traces resolve to original source. CLI + Vite plugin + Metro config wrapper + Gradle/Xcode hooks for React Native release builds.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "telemetry-sourcemaps": "./bin/telemetry-sourcemaps.js"
+    "qtpack": "./bin/qtpack.js"
   },
   "exports": {
     ".": "./src/index.js",

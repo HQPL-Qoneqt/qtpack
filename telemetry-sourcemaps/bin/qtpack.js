@@ -7,12 +7,12 @@ import { assertProjectName, hashToken, newToken } from '../src/token.js';
 import { iosRelease, uploadReactNativeMap } from '../src/react-native.js';
 
 const USAGE = `Usage:
-  telemetry-sourcemaps inject --dir <path>
-  telemetry-sourcemaps copy-debug-id --from <metro map> --to <final map>
-  telemetry-sourcemaps upload --dir <path> --platform <web|android|ios> [options]
-  telemetry-sourcemaps react-native --platform <android|ios> --map <path> [options]
-  telemetry-sourcemaps token new --project <name>
-  telemetry-sourcemaps token hash            (reads the token from stdin)
+  qtpack inject --dir <path>
+  qtpack copy-debug-id --from <metro map> --to <final map>
+  qtpack upload --dir <path> --platform <web|android|ios> [options]
+  qtpack react-native --platform <android|ios> --map <path> [options]
+  qtpack token new --project <name>
+  qtpack token hash            (reads the token from stdin)
 
 inject: stamps a debug ID into every bundle under --dir that has a .map next
   to it, so errors resolve against that exact build. Run it after the build
@@ -25,7 +25,7 @@ copy-debug-id: copies "debugId" from Metro's map into the map React Native's
 
 upload: uploads every .map file under --dir to the telemetry backend.
 
-react-native: what the Android (gradle/telemetry-sourcemaps.gradle) and iOS
+react-native: what the Android (gradle/qtpack.gradle) and iOS
   (bin/compose-source-maps.cjs) release builds run. Copies the debug ID from
   --packager-map into --map, then uploads --map. A missing token or a failed
   upload only warns, unless SOURCEMAP_FAIL_ON_ERROR=1.
@@ -57,7 +57,7 @@ Environment (upload):
 `;
 
 function fail(message) {
-  console.error(`telemetry-sourcemaps: ${message}`);
+  console.error(`qtpack: ${message}`);
   process.exit(1);
 }
 
@@ -82,7 +82,7 @@ async function runToken(args) {
       fail(err.message);
     }
     const token = newToken();
-    // Token on stdout only, so `telemetry-sourcemaps token new ... | pbcopy` works and
+    // Token on stdout only, so `qtpack token new ... | pbcopy` works and
     // nothing leaks into logs via stderr. The hash line is what the backend needs.
     process.stdout.write(`${token}\n`);
     console.error(`SOURCEMAP_PROJECT_TOKENS entry for ${values.project} (add to backend env, then restart):`);
