@@ -101,7 +101,8 @@ export function createClient(adapters) {
     }
     // The server rejects these with a 400, so every report would be lost.
     if (!PLATFORMS.includes(s.platform)) console.warn(`[@hqpl/errors] platform "${s.platform}" is not one of ${PLATFORMS.join(', ')}; the server will reject reports.`);
-    if (s.projectName && !PROJECT_RE.test(s.projectName)) console.warn(`[@hqpl/errors] projectName "${s.projectName}" must be 1-64 chars of a-z, 0-9, _ or -; the server will reject reports.`);
+    if (!s.projectName) console.warn('[@hqpl/errors] init() needs `projectName` (a registered project); the server will reject reports without one.');
+    else if (!PROJECT_RE.test(s.projectName)) console.warn(`[@hqpl/errors] projectName "${s.projectName}" must be 1-64 chars of a-z, 0-9, _ or -; the server will reject reports.`);
 
     s.enabled = true;
     if (!s.sessionId) s.sessionId = _safe(adapters.sessionId) || _uuid();

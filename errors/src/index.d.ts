@@ -6,8 +6,9 @@ export interface ErrorsInitConfig {
   endpoint?: string;
   // Or the base of a proxy that serves cx/errors (must end with '/'): endpoint = apiBase + 'cx/errors'.
   apiBase?: string;
-  // Analytics project slug (a-z, 0-9, _ or -, at most 64). Must match the qtpack upload project.
-  projectName?: string;
+  // Registered analytics project (an entry in the server's SOURCEMAP_PROJECT_TOKENS; a-z, 0-9,
+  // _ or -, at most 64). The server refuses reports without one. Same as the qtpack upload project.
+  projectName: string;
   // Must match the release qtpack uploaded the sourcemaps under. Defaults to appVersion.
   release?: string;
   appVersion?: string;

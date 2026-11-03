@@ -150,14 +150,18 @@ exact sourcemap even if the release string is wrong.
 ### Adding a new app
 
 1. Choose a project slug, e.g. `billing-web`.
-2. Generate an upload token and give its SHA-256 hash to the analytics service in
-   `SOURCEMAP_PROJECT_TOKENS` (`billing-web:<sha256hex>`). The token itself goes
-   only into the app's CI, never into the app code.
+2. Register it: generate an upload token and add its SHA-256 hash to the
+   analytics service's `SOURCEMAP_PROJECT_TOKENS` (`billing-web:<sha256hex>`),
+   then restart the service. The token itself goes only into the app's CI,
+   never into the app code.
 3. Install `@hqpl/errors`, call `init({ projectName: 'billing-web', ... })` and
    upload sourcemaps with qtpack from CI.
 
-The app's errors then appear on the Errors page under that project. No
-server or dashboard change is needed.
+The server accepts errors only for registered projects. A report with a
+missing or unregistered `projectName` is refused with 403 and not retried, so
+register the project before the app ships. Once it is registered, the app's
+errors appear on the Errors page under that project. No code change is needed
+on the server or the dashboard.
 
 ## Privacy
 
