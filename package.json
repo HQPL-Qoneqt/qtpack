@@ -2,9 +2,13 @@
   "name": "hqpl-sdk",
   "private": true,
   "description": "Workspace for the published @hqpl/* packages.",
-  "workspaces": ["telemetry", "telemetry-sourcemaps"],
+  "workspaces": [
+    "telemetry",
+    "telemetry-sourcemaps",
+    "errors"
+  ],
   "scripts": {
-    "test": "npm test --workspace @hqpl/qtpack",
+    "test": "npm test --workspaces --if-present",
     "pack:check": "npm pack --dry-run --workspaces"
   }
 }
